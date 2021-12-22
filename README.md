@@ -208,7 +208,7 @@
 
    ```
 
-6. ?? 는 true 조건이나 undefined null 에서 통과한다. false 는 안되!
+6. ?? 는 undefined null 에서만 통과한다.
 
 ## 제네릭
 
