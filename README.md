@@ -178,3 +178,32 @@
    });
 
    ```
+
+4. 키값 어떻게 타입을 주는지 몰랐는데 이렇게 하는거구나!!!!!
+
+   ```
+   type Errors={
+       [prop: string]: string;
+       }
+   ```
+
+5. 함수를 overload 도 할 수 있다. 조건이 까다로우니 고민 해서 만들어야 한다.
+
+   - 모든 경우의 수를 다 넣어줘서 오류가 안생기게 만 들 수 있다.
+
+   ```
+    type a = string | number;
+
+    function add(a: string, b: string): string;
+    function add(a: number, b: number): number;
+    function add(a: string, b: number): string;
+    function add(a: number, b: string): string;
+    function add(a: a, b: a) {
+    if (typeof a === "string" || typeof b === "string") {
+        return a.toString() + b.toString();
+    }
+    return a + b;
+    }
+
+
+   ```

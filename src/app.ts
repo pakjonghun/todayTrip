@@ -1,7 +1,4 @@
-const dom = <HTMLParagraphElement>document.querySelector("p");
+const b = "abc";
+const a = true ?? "abc";
 
-//or
-// const dom = document.querySelector("p")! as HTMLParagraphElement;
-dom.addEventListener("click", () => {
-  console.log(1);
-});
+console.log(a);
