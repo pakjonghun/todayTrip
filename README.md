@@ -279,3 +279,105 @@
 
       arr.push(1); //오류
    ```
+
+## Decorator target:es6, decorator:true
+
+1. 퍼스트 클레스 데코레이터
+
+   - 데코레이터는 함수다.
+   - @ 는 ts 에 있는 특수한 기호다
+   - 퍼스트 클레스 데코는 지정만 한다 @Logger (o), @Logger() (x)
+   - 퍼스트 클레스 데코는 인자로 컨스트럭터를 받는다(클레스 정의)
+   - 클레스 정의할때 실행된다.(해당 클레스가 인스턴스화 안되도 똑같이 실행됨)
+
+   ```
+   function Logger(constractor: Function) {
+   console.log("logger");
+   }
+
+   @Logger   //밑에 클레스가 인스턴스되던 말던 일단 콘솔로그거 찍힌다.
+   class Person {
+   nam = "peter";
+
+   constractor() {
+      console.log("good person");
+   }
+   }
+
+   ```
+
+2. 데코레이터 팩토리 데코레이터를 반환하는 함수
+
+   - 데코레이터를 반환한다
+   - 이번엔 지정이 아니라 실행한다 @Logger()
+   - 처음엔 위에서 아래로 그 다음 리턴된 것들은 아래서 위로 순서로 실행된다.
+   - 처음 팩토리에서 실행되는 함수는 외부에서 인자를 받아서 들여올 수 있다.
+
+   ```
+   function Logger(arg: string) {
+   //원하는 인자를 받아서 사용할 수 있따.
+   console.log("logger");
+   //데코레이터가 정의된 익명함수를 반환한다.
+   return function (constractor: Function) {
+      console.log("returnedDeco");
+      console.log("returnedDeco2");
+   };
+   }
+
+   @Logger("옛다!! 인자!")
+   class Person {
+   nam = "peter";
+
+   constractor() {
+      console.log("good person");
+   }
+   }
+
+   ```
+
+3. 데코레이터 팩토리의 예시(클레스 시작전에 랜더링 하기) / 이것이 바로 메타 프로그래밍이다.! 뒤에서 다 처리함!
+
+   - 만약 뒷처리 하는 로직이 공통으로 사용하는 라이브러리 라면 정말 유용 할듯 하다.
+
+   ```
+   function WithTemplate(template: string, hookId: string) {
+   return function (_: Function) {
+    const parent = document.getElementById(hookId)! as HTMLDivElement;
+    parent.innerHTML = template;
+   };
+   }
+
+   // @Logger("옛다!! 인자!")
+   @WithTemplate("<div>hellow<div>", "id")
+   class Person {
+   nam = "peter";
+
+   constractor() {
+      console.log("good person");
+   }
+   }
+
+   ```
+
+4. 컨스트럭터 인자로 클레스를 만들어서 클레스 멤버를 이용 할 수도 있다.
+
+   ```
+   function WithTemplate(template: string, hookId: string) {
+   return function (constractor: { new (...arg: any[]): Person }) {
+    const p = new constractor();
+    const parent = document.getElementById(hookId)! as HTMLDivElement;
+    parent.innerHTML = template;
+    parent.querySelector("div")!.textContent = p.nam;
+   };
+   }
+
+   // @Logger("옛다!! 인자!")
+   @WithTemplate("<div>hellow<div>", "id")
+   class Person {
+   nam = "peteraa";
+
+   constractor() {
+      console.log("good person");
+   }
+   }
+   ```
