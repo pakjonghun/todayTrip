@@ -1,27 +1,17 @@
-class Store<T> {
-  private storage: Array<T> = [];
-  add(item: T) {
-    this.storage.push(item);
-  }
+type obj = {
+  a: 1;
+  b: 2;
+};
 
-  delete(item: T) {
-    const isExist = this.storage.indexOf(item) >= 0;
+function abc<T extends obj>(a: T): T {
+  const temp: Partial<T> = {};
 
-    if (!isExist && typeof item === "object") {
-      return;
-    }
+  temp.a = 1;
+  temp.b = 2;
 
-    this.storage.splice(this.storage.indexOf(item), 1);
-  }
-
-  get getItem() {
-    return this.storage;
-  }
+  return temp as T;
 }
 
-const s = new Store<object>();
-s.add({ name: "a" });
-s.add({ name: "a" });
-console.log(s.getItem);
-s.delete({ name: "a" });
-console.log(s.getItem);
+const arr: Readonly<number[]> = [1, 2, 3];
+
+arr.push(1); //오류

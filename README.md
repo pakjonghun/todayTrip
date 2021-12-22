@@ -257,3 +257,25 @@
    ```
 
 5. 저장소에서는 타입을 원시타입으로 하는것이 좋다. 참조방식은 안좋음. 찾을수 없음. 메모리 주소가 달라서.
+6. ts에서 자체 제공하는 여러 타입이 있다 partial readonly 등등
+
+   ```
+   type obj = {
+      a: 1;
+      b: 2;
+      };
+
+      function abc<T extends obj>(a: T): T {
+      const temp: Partial<T> = {};
+
+      temp.a = 1;
+      temp.b = 2;
+
+      return temp as T;
+      }
+
+
+      const arr: Readonly<number[]> = [1, 2, 3]
+
+      arr.push(1); //오류
+   ```
