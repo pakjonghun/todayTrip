@@ -126,3 +126,55 @@
 11. "strict": true // 이 옵션 하나면 모든 strict options 가 true 인것과 같다.
     - nullcheck(말그대로임), implict(타입 설정 안해도 그냥 넘어간다)
 12. additionalCheck 코드품질을 높게!!
+
+## 타입 활용
+
+1. 타입가드
+
+   ```
+   key in obj <-- 타입에 키값이 있을때 확인가능, 클레스 에서도 확인가능
+   typeof val <-- 원시적인 타입만 확인가능
+   instanceof <-- 클레스로 만든 인스턴스 확인가능 인스턴스 안된다 instance 설계도 말하는거임
+
+   ```
+
+2. 타입 구분법 인스턴스에 새로운 속성을 넣어주어라
+
+   ```
+   interface A {
+   type: "A";
+   flying(): void;
+   }
+
+    interface B {
+    type: "B";
+    running(): void;
+    }
+
+    type C = A | B;
+
+    function move(animal: C) {
+    switch (animal.type) {
+    case "A":
+    break;
+    case "B":
+    break;
+    default:
+    return;
+    }
+    }
+
+   ```
+
+3. 타입 강제 캐스팅 방법은 2개가 있는데 jsx 와 충돌 고려 해서 !as 가 좋은 것 같다.
+
+   ```
+   const dom = <HTMLParagraphElement>document.querySelector("p");
+
+   //or
+   // const dom = document.querySelector("p")! as HTMLParagraphElement;
+   dom.addEventListener("click", () => {
+   console.log(1);
+   });
+
+   ```
