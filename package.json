@@ -1,0 +1,22 @@
+{
+  "name": "todaytrip",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "lite-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pakjonghun/todayTrip.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pakjonghun/todayTrip/issues"
+  },
+  "homepage": "https://github.com/pakjonghun/todayTrip#readme",
+  "dependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
