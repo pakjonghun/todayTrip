@@ -207,3 +207,51 @@
 
 
    ```
+
+6. ?? 는 true 조건이나 undefined null 에서 통과한다. false 는 안되!
+
+## 제네릭
+
+1. 내장제네릭
+   ```
+   //내장 제네릭 어레이와 프라미스
+   const ar: Array<string> = ["a"];
+   const promise: Promise<string> = new Promise((resolve, reject) => {
+   resolve("a");
+   });
+   ```
+2. 함수 제네릭
+
+   ```
+   type a = { a: string };
+   type b = { b: string };
+
+   const ab = <A, B>(a: A, b: B) => {
+   return Object.assign(a, b);
+   };
+
+   ab<a, b>({ a: "a" }, { b: "B" });
+   ```
+
+3. 선택형식 다음에 필수형식이 와야 한다.
+
+   ```
+   //선택 형식 이후 필수형식이 와야 한다.
+   const ab = <A, B = b>(a: A, b: B) => {
+   return Object.assign(a, b);
+   };
+   ```
+
+4. keyof 는 그냥 extends keyof 로 쓰면되는듯 하다.
+
+   ```
+   type keyo = { a: "aa"; b: "bb"; c: "cc" };
+
+   function extractt<O extends keyo, K extends keyof O>(obj: O, key: K) {
+   console.log(obj[key]);
+   return obj[key];
+   }
+
+   extractt<keyo, keyof keyo>({ a: "aa", b: "bb", c: "cc" }, "c");
+
+   ```
