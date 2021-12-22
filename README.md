@@ -84,3 +84,45 @@
     ```
 9.  any 타입검사를 아예 안한다.
 10. never 오류를 반환 하는 경우의 타입, 무한루프경우
+
+## tsconfig
+
+1. exclude
+
+   ```
+   //모든 폴더 ** 내에 모든 tscs.ts 파일은 컴파일 하지 마라.
+   //node_modules 는 아무것도 안적어도 자동 exclude 된다.
+    "exclude": ["**/*.dev.ts"]
+   ```
+
+2. include : 한번 설정 하면 모든 컴파일 할 파일 다 넣어야 함.
+   ```
+   //먼저 인클루드 한것 중에서 익스클루드를 빼는 것 같다.
+   //서로 상충되는데 잘 작동한다 단 .dev.ts 는 컴파일 안된다.
+   "exclude": ["**/*.dev.ts", "node_modules"],
+   "include": ["src/**/*.ts"]
+   ```
+3. 파일단위 인클루드 "file"
+   ```
+     "files": ["app.ts"]
+   ```
+4. target 는 어떤 버전으로 컴파일 할건지? es6 == 2015 정도 레벨임
+5. lib 는 안적으면 기본적인 methods properties가 사용될 수 있는 것들이 매핑된다. fetch addevent 등등.
+   - 컴파일 할 js 버전에 따라 다르다.
+   ```
+   //target es6와 동일한 옵션
+   "lib": [
+      "ES6",
+      "DOM",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+   ```
+6. sourcemap //ts로 디버깅 가능
+7. rootdoor outdoor root //를 다른 폴더로 설정해도 가장 바깥에 있는 ts 파일 도 처리 해준다.
+8. removecomments 주석제거 //파일 용량 줄여야지!
+9. noemit js 파일 안만든다. //컴파일 하는데 시간 오래 걸리면 쓸 수도 있지.
+10. no emit on error //에러있으면 컴파일 안한다. //에러있으면 시간 아껴야지.
+11. "strict": true // 이 옵션 하나면 모든 strict options 가 true 인것과 같다.
+    - nullcheck(말그대로임), implict(타입 설정 안해도 그냥 넘어간다)
+12. additionalCheck 코드품질을 높게!!
