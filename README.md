@@ -500,3 +500,62 @@
    }
    }
    ```
+
+8. validation decorator 제작 역시 서브파티를 데코레이터에 넣으면 좋을듯
+
+   ```
+   type Valu = {
+   [k: string]: {
+      [k: string]: string[];
+   };
+   };
+
+   type UnionValues = {
+   title: string;
+   price: number;
+   };
+
+   interface IDump {
+   title: string;
+   price: number;
+   }
+
+   const config: Valu = {};
+
+   function Re(t: any, n: string) {
+   const name = t.constructor.name;
+   config[name] = {
+      ...config[name],
+      [n]: [...(config[name]?.[n] ?? []), "required"],
+   };
+   }
+
+   function Po(t: any, n: string) {
+   const name = t.constructor.name;
+   config[name] = {
+      ...config[name],
+      [n]: [...(config[name]?.[n] ?? []), "positive"],
+   };
+   }
+
+   function valid(dump: any): boolean {
+   const vals = config[dump.constructor.name];
+   let result = true;
+
+   for (const key in vals) {
+      for (const item of vals[key]!) {
+         switch (item) {
+         case "required":
+            result = !!dump[key];
+            break;
+         case "positive":
+            result = dump[key] > 0;
+            break;
+         default:
+            throw new Error("error");
+         }
+      }
+   }
+
+   return result;
+   ```
