@@ -288,7 +288,9 @@
    - @ 는 ts 에 있는 특수한 기호다
    - 퍼스트 클레스 데코는 지정만 한다 @Logger (o), @Logger() (x)
    - 퍼스트 클레스 데코는 인자로 컨스트럭터를 받는다(클레스 정의)
+   - 모든 데코레이터는 클레스를 인스턴트화 안해도 실행된다 즉
    - 클레스 정의할때 실행된다.(해당 클레스가 인스턴스화 안되도 똑같이 실행됨)
+   - 단 클레스 팩토리에서 클레스를 반환하는 데코레이터를 리턴할때는 함수가 인스턴스 될때 실행됨.
 
    ```
    function Logger(constractor: Function) {
@@ -356,7 +358,6 @@
       console.log("good person");
    }
    }
-
    ```
 
 4. 컨스트럭터 인자로 클레스를 만들어서 클레스 멤버를 이용 할 수도 있다.
@@ -378,6 +379,124 @@
 
    constractor() {
       console.log("good person");
+   }
+   }
+
+
+   //위에서 좀더 개선 : 아예 클레스를 리턴해 버리면 불필요하게 인스턴스 반복 안해도 된다. 딱 한번 인스턴스 화 될때만 실행된다.
+   function WithTemplate(template: string, hookId: string) {
+   console.log("tem1");
+   return function (constractor: { new (...arg: any[]): Person }) {
+    return class extends constractor {
+      constructor() {
+        super();
+        console.log("tem222222222");
+        const parent = document.getElementById(hookId)! as HTMLDivElement;
+        parent.innerHTML = template;
+        parent.querySelector("div")!.textContent = this.nam;
+      }
+    };
+   };
+   }
+   ```
+
+5. 데코레이터 추가 할수 있는 곳 (클레스 바로 정의위, 메서드, 생성자를 제외한 멤버(속성, 메서드 등))
+
+   - 특징 : 멤버에 쓰인 데코는 무언가를 반환하지만, 매개변수에 쓰인 데코는 아무것도 반환하지 않는다.
+   - 메서드에 추가시 3개의 파라미터를 받는다(target:생성자, name:접근자, PropertyDescriptor:PropertyDescriptor)
+   - 속성에 추가시 2개의 파라미터를 받는다(target:생성자, name:접근자)
+   - 매개변수에 추가시 3개의 파라미터를 받는다(target:생성자, name:접근자, position:매개변수 위치 왼쪽부터 0)
+
+   ```
+   function Log(target: any, name: string | symbol) {
+   console.log(target);
+   console.log(name);
+   // const instanceNew = new target();
+   }
+
+   function Log2(
+   target: any,
+   name: string | symbol,
+   descriptor: PropertyDescriptor
+   ) {
+   console.log("log2");
+   console.log(target);
+   console.log(name);
+   console.log(descriptor);
+   }
+
+   function Log3(
+   target: any,
+   name: string | symbol,
+   descriptor: PropertyDescriptor
+   ) {
+   console.log("log3)");
+   console.log(target);
+   console.log(name);
+   console.log(descriptor);
+   }
+
+   function Arg(target: any, name: string | symbol, position: number) {
+   console.log("arg1");
+   console.log(target);
+   console.log(name);
+   console.log(position);
+   }
+
+   class Tax {
+   @Log
+   text: string;
+   private price: number;
+
+   constructor(t: string, p: number) {
+      this.text = t;
+      this.price = p;
+   }
+
+   @Log3
+   set setPrice(@Arg p: number) {
+      this.price = p;
+   }
+
+   @Log2
+   caculate(@Arg rate: number): string {
+      return `${this.price * rate}원`;
+   }
+   }
+
+   ```
+
+6. 혹시 사용하지 않는 argment가 있어서 오류가 난다면
+
+   ```
+   constructor(..._: any[]) {   /<==이렇게 처리해주자
+   ```
+
+7. 오토 바인딩 하는 예시(매서드 변경 하는 방법)
+
+   ```
+   function Au(_: any, _2: string, descriptor: PropertyDescriptor) {
+   const originalMethod = descriptor.value;
+   const adjDescriptor: PropertyDescriptor = {
+    configurable: true,
+    enumerable: false,
+    get() {
+      const boundFn = originalMethod.bind(this);
+      return boundFn;
+    },
+   };
+   return adjDescriptor;
+   }
+
+   class Print {
+   message: string;
+   constructor() {
+      this.message = "hellow";
+   }
+
+   @Au
+   print() {
+      alert(this.message);
    }
    }
    ```
